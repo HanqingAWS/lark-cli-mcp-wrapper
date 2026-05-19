@@ -1,0 +1,331 @@
+[
+  {
+    "service": "calendar",
+    "command": "+agenda",
+    "description": "Show upcoming calendar events for the current user",
+    "risk": "read",
+    "flags": [
+      { "name": "days", "type": "number", "description": "Number of days to look ahead (default: 7)", "required": false },
+      { "name": "calendar-id", "type": "string", "description": "Calendar ID to query (default: primary)", "required": false }
+    ]
+  },
+  {
+    "service": "calendar",
+    "command": "+create",
+    "description": "Create a new calendar event",
+    "risk": "write",
+    "flags": [
+      { "name": "summary", "type": "string", "description": "Event title/summary", "required": true },
+      { "name": "start", "type": "string", "description": "Start time (ISO 8601 or natural language)", "required": true },
+      { "name": "end", "type": "string", "description": "End time (ISO 8601 or natural language)", "required": true },
+      { "name": "description", "type": "string", "description": "Event description", "required": false },
+      { "name": "attendees", "type": "string", "description": "Comma-separated list of attendee emails or open_ids", "required": false },
+      { "name": "calendar-id", "type": "string", "description": "Calendar ID (default: primary)", "required": false }
+    ]
+  },
+  {
+    "service": "calendar",
+    "command": "+freebusy",
+    "description": "Check free/busy status for users in a time range",
+    "risk": "read",
+    "flags": [
+      { "name": "user-ids", "type": "string", "description": "Comma-separated user IDs to check", "required": true },
+      { "name": "start", "type": "string", "description": "Start of time range (ISO 8601)", "required": true },
+      { "name": "end", "type": "string", "description": "End of time range (ISO 8601)", "required": true }
+    ]
+  },
+  {
+    "service": "calendar",
+    "command": "+room-find",
+    "description": "Find available meeting rooms",
+    "risk": "read",
+    "flags": [
+      { "name": "start", "type": "string", "description": "Start time (ISO 8601)", "required": true },
+      { "name": "end", "type": "string", "description": "End time (ISO 8601)", "required": true },
+      { "name": "building-id", "type": "string", "description": "Building ID to search in", "required": false },
+      { "name": "capacity", "type": "number", "description": "Minimum room capacity", "required": false }
+    ]
+  },
+  {
+    "service": "contact",
+    "command": "get-user",
+    "description": "Get user details by user_id or open_id",
+    "risk": "read",
+    "flags": [
+      { "name": "user-id", "type": "string", "description": "User ID to look up", "required": true },
+      { "name": "user-id-type", "type": "string", "description": "Type of user ID", "required": false, "enum": ["open_id", "union_id", "user_id"] }
+    ]
+  },
+  {
+    "service": "contact",
+    "command": "+search-user",
+    "description": "Search users by name or email",
+    "risk": "read",
+    "flags": [
+      { "name": "query", "type": "string", "description": "Search query (name, email, etc.)", "required": true },
+      { "name": "page-size", "type": "number", "description": "Number of results per page", "required": false }
+    ]
+  },
+  {
+    "service": "im",
+    "command": "+send",
+    "description": "Send a message to a chat or user",
+    "risk": "write",
+    "flags": [
+      { "name": "receive-id", "type": "string", "description": "Chat ID or user open_id to send message to", "required": true },
+      { "name": "receive-id-type", "type": "string", "description": "Type of receive_id", "required": false, "enum": ["chat_id", "open_id", "user_id", "union_id", "email"] },
+      { "name": "msg-type", "type": "string", "description": "Message type", "required": true, "enum": ["text", "interactive", "image", "file"] },
+      { "name": "content", "type": "string", "description": "Message content (JSON string)", "required": true }
+    ]
+  },
+  {
+    "service": "im",
+    "command": "+list-chats",
+    "description": "List chats/groups the bot or user belongs to",
+    "risk": "read",
+    "flags": [
+      { "name": "page-size", "type": "number", "description": "Number of results per page", "required": false },
+      { "name": "page-token", "type": "string", "description": "Pagination token", "required": false }
+    ]
+  },
+  {
+    "service": "im",
+    "command": "+read-messages",
+    "description": "Read recent messages from a chat",
+    "risk": "read",
+    "flags": [
+      { "name": "container-id", "type": "string", "description": "Chat ID to read from", "required": true },
+      { "name": "page-size", "type": "number", "description": "Number of messages to retrieve", "required": false },
+      { "name": "page-token", "type": "string", "description": "Pagination token", "required": false }
+    ]
+  },
+  {
+    "service": "im",
+    "command": "+reply",
+    "description": "Reply to a specific message",
+    "risk": "write",
+    "flags": [
+      { "name": "message-id", "type": "string", "description": "Message ID to reply to", "required": true },
+      { "name": "msg-type", "type": "string", "description": "Reply message type", "required": true, "enum": ["text", "interactive"] },
+      { "name": "content", "type": "string", "description": "Reply content (JSON string)", "required": true }
+    ]
+  },
+  {
+    "service": "docs",
+    "command": "+create",
+    "description": "Create a new Lark document",
+    "risk": "write",
+    "flags": [
+      { "name": "title", "type": "string", "description": "Document title", "required": true },
+      { "name": "folder-token", "type": "string", "description": "Parent folder token", "required": false },
+      { "name": "markdown", "type": "string", "description": "Initial content in Markdown format", "required": false }
+    ]
+  },
+  {
+    "service": "docs",
+    "command": "+read",
+    "description": "Read the content of a Lark document",
+    "risk": "read",
+    "flags": [
+      { "name": "document-id", "type": "string", "description": "Document ID or URL", "required": true },
+      { "name": "output-format", "type": "string", "description": "Output format", "required": false, "enum": ["markdown", "text", "json"] }
+    ]
+  },
+  {
+    "service": "docs",
+    "command": "+list",
+    "description": "List documents in a folder",
+    "risk": "read",
+    "flags": [
+      { "name": "folder-token", "type": "string", "description": "Folder token (default: root)", "required": false },
+      { "name": "page-size", "type": "number", "description": "Number of results per page", "required": false }
+    ]
+  },
+  {
+    "service": "drive",
+    "command": "+upload",
+    "description": "Upload a file to Lark Drive",
+    "risk": "write",
+    "flags": [
+      { "name": "file-path", "type": "string", "description": "Local file path to upload", "required": true },
+      { "name": "parent-node", "type": "string", "description": "Parent folder token", "required": false },
+      { "name": "file-name", "type": "string", "description": "Override file name", "required": false }
+    ]
+  },
+  {
+    "service": "drive",
+    "command": "+download",
+    "description": "Download a file from Lark Drive",
+    "risk": "read",
+    "flags": [
+      { "name": "file-token", "type": "string", "description": "File token to download", "required": true },
+      { "name": "output-path", "type": "string", "description": "Local path to save file", "required": false }
+    ]
+  },
+  {
+    "service": "drive",
+    "command": "+list",
+    "description": "List files in a Lark Drive folder",
+    "risk": "read",
+    "flags": [
+      { "name": "folder-token", "type": "string", "description": "Folder token (default: root)", "required": false },
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false },
+      { "name": "page-token", "type": "string", "description": "Pagination token", "required": false }
+    ]
+  },
+  {
+    "service": "base",
+    "command": "base-get",
+    "description": "Get metadata for a Bitable app (base)",
+    "risk": "read",
+    "flags": [
+      { "name": "app-token", "type": "string", "description": "Bitable app token", "required": true }
+    ]
+  },
+  {
+    "service": "base",
+    "command": "+data-query",
+    "description": "Query records from a Bitable table with filtering and sorting",
+    "risk": "read",
+    "flags": [
+      { "name": "app-token", "type": "string", "description": "Bitable app token", "required": true },
+      { "name": "table-id", "type": "string", "description": "Table ID", "required": true },
+      { "name": "filter", "type": "string", "description": "Filter expression", "required": false },
+      { "name": "sort", "type": "string", "description": "Sort expression", "required": false },
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false },
+      { "name": "page-token", "type": "string", "description": "Pagination token", "required": false }
+    ]
+  },
+  {
+    "service": "base",
+    "command": "+record-batch-create",
+    "description": "Batch create records in a Bitable table",
+    "risk": "high-risk-write",
+    "flags": [
+      { "name": "app-token", "type": "string", "description": "Bitable app token", "required": true },
+      { "name": "table-id", "type": "string", "description": "Table ID", "required": true },
+      { "name": "records", "type": "string", "description": "JSON array of record objects", "required": true }
+    ]
+  },
+  {
+    "service": "base",
+    "command": "+record-search",
+    "description": "Search records in a Bitable table",
+    "risk": "read",
+    "flags": [
+      { "name": "app-token", "type": "string", "description": "Bitable app token", "required": true },
+      { "name": "table-id", "type": "string", "description": "Table ID", "required": true },
+      { "name": "filter", "type": "string", "description": "Filter expression", "required": false },
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false },
+      { "name": "page-token", "type": "string", "description": "Pagination token", "required": false }
+    ]
+  },
+  {
+    "service": "task",
+    "command": "+create",
+    "description": "Create a new task",
+    "risk": "write",
+    "flags": [
+      { "name": "summary", "type": "string", "description": "Task summary/title", "required": true },
+      { "name": "due", "type": "string", "description": "Due date (ISO 8601)", "required": false },
+      { "name": "description", "type": "string", "description": "Task description", "required": false },
+      { "name": "members", "type": "string", "description": "Comma-separated member IDs", "required": false }
+    ]
+  },
+  {
+    "service": "task",
+    "command": "+list",
+    "description": "List tasks",
+    "risk": "read",
+    "flags": [
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false },
+      { "name": "page-token", "type": "string", "description": "Pagination token", "required": false },
+      { "name": "completed", "type": "boolean", "description": "Show completed tasks", "required": false }
+    ]
+  },
+  {
+    "service": "task",
+    "command": "+complete",
+    "description": "Mark a task as complete",
+    "risk": "write",
+    "flags": [
+      { "name": "task-id", "type": "string", "description": "Task ID to complete", "required": true }
+    ]
+  },
+  {
+    "service": "mail",
+    "command": "+send",
+    "description": "Send an email via Lark Mail",
+    "risk": "write",
+    "flags": [
+      { "name": "to", "type": "string", "description": "Recipient email addresses (comma-separated)", "required": true },
+      { "name": "subject", "type": "string", "description": "Email subject", "required": true },
+      { "name": "body", "type": "string", "description": "Email body (plain text or HTML)", "required": true },
+      { "name": "cc", "type": "string", "description": "CC addresses (comma-separated)", "required": false },
+      { "name": "body-type", "type": "string", "description": "Body content type", "required": false, "enum": ["text", "html"] }
+    ]
+  },
+  {
+    "service": "mail",
+    "command": "+list",
+    "description": "List recent emails",
+    "risk": "read",
+    "flags": [
+      { "name": "folder", "type": "string", "description": "Mail folder", "required": false, "enum": ["inbox", "sent", "drafts", "trash"] },
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false }
+    ]
+  },
+  {
+    "service": "approval",
+    "command": "+create",
+    "description": "Create an approval instance",
+    "risk": "write",
+    "flags": [
+      { "name": "approval-code", "type": "string", "description": "Approval definition code", "required": true },
+      { "name": "form", "type": "string", "description": "Form data as JSON string", "required": true }
+    ]
+  },
+  {
+    "service": "approval",
+    "command": "+list",
+    "description": "List approval instances",
+    "risk": "read",
+    "flags": [
+      { "name": "approval-code", "type": "string", "description": "Filter by approval code", "required": false },
+      { "name": "status", "type": "string", "description": "Filter by status", "required": false, "enum": ["PENDING", "APPROVED", "REJECTED", "CANCELED"] },
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false }
+    ]
+  },
+  {
+    "service": "wiki",
+    "command": "+search",
+    "description": "Search wiki/knowledge base content",
+    "risk": "read",
+    "flags": [
+      { "name": "query", "type": "string", "description": "Search query", "required": true },
+      { "name": "space-id", "type": "string", "description": "Wiki space ID to search in", "required": false },
+      { "name": "page-size", "type": "number", "description": "Results per page", "required": false }
+    ]
+  },
+  {
+    "service": "wiki",
+    "command": "+get-node",
+    "description": "Get a wiki node (page) content",
+    "risk": "read",
+    "flags": [
+      { "name": "token", "type": "string", "description": "Wiki node token", "required": true },
+      { "name": "output-format", "type": "string", "description": "Output format", "required": false, "enum": ["markdown", "text", "json"] }
+    ]
+  },
+  {
+    "service": "attendance",
+    "command": "+query",
+    "description": "Query attendance records",
+    "risk": "read",
+    "flags": [
+      { "name": "user-ids", "type": "string", "description": "Comma-separated user IDs", "required": true },
+      { "name": "start-date", "type": "string", "description": "Start date (YYYY-MM-DD)", "required": true },
+      { "name": "end-date", "type": "string", "description": "End date (YYYY-MM-DD)", "required": true }
+    ]
+  }
+]
