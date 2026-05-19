@@ -20,6 +20,7 @@ export declare function getMetaToolSchemas(): ({
                 description: string;
             };
             tool_name?: undefined;
+            args?: undefined;
         };
         required: string[];
     };
@@ -35,8 +36,28 @@ export declare function getMetaToolSchemas(): ({
             };
             query?: undefined;
             service?: undefined;
+            args?: undefined;
         };
         required: string[];
+    };
+} | {
+    name: string;
+    description: string;
+    inputSchema: {
+        type: string;
+        required: string[];
+        properties: {
+            tool_name: {
+                type: string;
+                description: string;
+            };
+            args: {
+                type: string;
+                description: string;
+            };
+            query?: undefined;
+            service?: undefined;
+        };
     };
 })[];
 export declare function handleMetaTool(name: string, args: Record<string, unknown>): Promise<MetaToolResult | null>;

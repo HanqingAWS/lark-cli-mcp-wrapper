@@ -1,5 +1,5 @@
 import { searchCatalog } from "./catalog.js";
-import { buildInputSchema, ToolDef } from "./tools.js";
+import { buildInputSchema, executeTool, ToolDef, McpTool } from "./tools.js";
 import { readFileSync } from "node:fs";
 
 const allToolDefs: ToolDef[] = JSON.parse(
@@ -50,6 +50,25 @@ export function getMetaToolSchemas() {
           },
         },
         required: ["tool_name"],
+      },
+    },
+    {
+      name: "lark_invoke",
+      description:
+        "[read|write] Invoke any Lark tool by name. Use after lark_search_tools + lark_get_tool_schema to call tools not in the high-frequency set. Pass the exact tool_name and its args object.",
+      inputSchema: {
+        type: "object",
+        required: ["tool_name"],
+        properties: {
+          tool_name: {
+            type: "string",
+            description: "The tool name from lark_search_tools (e.g. 'lark_wiki_node_create')",
+          },
+          args: {
+            type: "object",
+            description: "Arguments object matching the tool's inputSchema",
+          },
+        },
       },
     },
   ];
@@ -113,6 +132,53 @@ export async function handleMetaTool(
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };
+  }
+
+  if (name === "lark_invoke") {
+    const targetName = String(args.tool_name ?? "");
+    const toolArgs = (args.args as Record<string, unknown>) ?? {};
+
+    if (!targetName) {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ error: "tool_name is required" }) }],
+        isError: true,
+      };
+    }
+
+    const def = allToolDefs.find((d) => toolName(d) === targetName);
+    if (!def) {
+      // Try to suggest similar tools
+      const similar = allToolDefs
+        .map((d) => toolName(d))
+        .filter((n) => n.includes(targetName.split("_").slice(-1)[0]))
+        .slice(0, 5);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              error: "unknown_tool",
+              tool_name: targetName,
+              similar,
+              hint: "Use lark_search_tools to find the correct tool name",
+            }),
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    // Build a McpTool and execute it
+    const mcpTool: McpTool = {
+      schema: {
+        name: targetName,
+        description: `[${def.risk}] ${def.description}`,
+        inputSchema: buildInputSchema(def),
+      },
+      def,
+    };
+
+    return executeTool(mcpTool, toolArgs);
   }
 
   return null;
